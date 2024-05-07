@@ -33,6 +33,7 @@ Vue.component('creator', {
                     hour: new Date().getHours(),
                     min: new Date().getMinutes(),
                 },
+                reasonRefund: null,
                 title: null,
                 description: null,
                 deadline:null,
@@ -93,7 +94,9 @@ Vue.component('card', {
     },
     data(){
         return{
+            errorRefund: null,
             cardRedactionFlag: false,
+            showReasonRefundFlag: false,
             blankForRedaction:{
                 dateOfRed:{                    
                     year: new Date().getFullYear(),
@@ -140,6 +143,8 @@ Vue.component('card', {
 
             <p><b>Сделать до:</b> {{exampleCard.deadline}}</p>
 
+            <p v-if="exampleCard.reasonRefund && !showReasonRefundFlag" ><b>Нужно <span v-if="column_id=='third'">было</span> доработать </b> {{ exampleCard.reasonRefund }} </p>
+
             <button class="btn_style" v-show="column_id=='first' && !cardRedactionFlag" @click.prevent="deleteCard(indexInList)">Удалить</button>
             <button class="btn_style" v-show="(column_id=='first' || column_id=='second') && !cardRedactionFlag" @click.prevent="cardRedactionFlag= true">Редактировать</button>
             <button class="btn_style" v-show="cardRedactionFlag" @click.prevent="cancelRedaction">Отмена</button>
@@ -147,7 +152,13 @@ Vue.component('card', {
             <button class="move_btn btn_style" v-show="column_id=='first' && !cardRedactionFlag" @click.prevent="moveCardToSecond"> >> </button>
             <button class="move_btn btn_style" v-show="column_id=='second' && !cardRedactionFlag" @click.prevent="moveCardToThird"> >> </button>
 
-            <button class="move_btn btn_style" v-show="column_id=='third' && !cardRedactionFlag" @click.prevent="moveCardToSecondFromThird"> << </button>
+            <button class="move_btn btn_style" v-show="column_id=='third' && !showReasonRefundFlag" @click.prevent="showReasonRefundFlag= true"> << </button>
+            <p v-if="showReasonRefundFlag"><b>Причина возврата:</b> 
+                <input type="text" v-model="exampleCard.reasonRefund">   
+            </p>
+            <button class="move_btn btn_style" v-show="column_id=='third' && showReasonRefundFlag" @click.prevent="showReasonRefundFlag= false">Отмена</button>
+            <button class="move_btn btn_style" v-show="column_id=='third' && showReasonRefundFlag" @click.prevent="moveCardToSecondFromThird">Вернуть</button>
+
             <button class="move_btn btn_style" v-show="column_id=='third' && !cardRedactionFlag" @click.prevent="moveCardToFourth"> >> </button>
         </div>
         `
