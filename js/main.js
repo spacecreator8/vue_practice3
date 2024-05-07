@@ -153,8 +153,9 @@ Vue.component('card', {
             <button class="move_btn btn_style" v-show="column_id=='second' && !cardRedactionFlag" @click.prevent="moveCardToThird"> >> </button>
 
             <button class="move_btn btn_style" v-show="column_id=='third' && !showReasonRefundFlag" @click.prevent="showReasonRefundFlag= true"> << </button>
-            <p v-if="showReasonRefundFlag"><b>Причина возврата:</b> 
-                <input type="text" v-model="exampleCard.reasonRefund">   
+            <p v-if="showReasonRefundFlag"><b>Причина возврата:</b>
+                <span v-if="showReasonRefundFlag && errorRefund != null" class="red_text"> {{ errorRefund }} </span> 
+                <input v-if="showReasonRefundFlag" type="text" v-model="exampleCard.reasonRefund">   
             </p>
             <button class="move_btn btn_style" v-show="column_id=='third' && showReasonRefundFlag" @click.prevent="showReasonRefundFlag= false">Отмена</button>
             <button class="move_btn btn_style" v-show="column_id=='third' && showReasonRefundFlag" @click.prevent="moveCardToSecondFromThird">Вернуть</button>
@@ -204,9 +205,15 @@ Vue.component('card', {
             eventBus.$emit('delete-from-second', this.indexInList);
         },
         moveCardToSecondFromThird(){
-            let copy = this.copyCard();
-            eventBus.$emit('move-card-to-second', copy);
-            eventBus.$emit('delete-from-third', this.indexInList);
+            this.errorRefund= null;
+            if(!this.exampleCard.reasonRefund){
+                this.errorRefund = "Нужно указать причину возврата"
+            }else{
+                let copy = this.copyCard();
+                eventBus.$emit('move-card-to-second', copy);
+                eventBus.$emit('delete-from-third', this.indexInList);
+            }
+
         },
         moveCardToFourth(){
             let copy = this.copyCard();
