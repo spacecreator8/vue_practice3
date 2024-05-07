@@ -10,13 +10,13 @@ Vue.component('creator', {
     template:
     `
         <div class="creator">
-            <p>Название</p>
+            <p><b>Название</b></p>
             <input type="text" v-model="blank.title">
             <p>Описание</p>
             <textarea col="12" rows="4" v-model="blank.description"></textarea><br>
             <p>Когда сделать</p>
             <input type="date" v-model="blank.deadline"><br>
-            <button @click.prevent="submitCreateForm">Добавить</button>
+            <button class="btn_style" @click.prevent="submitCreateForm">Добавить</button>
         </div>
     `,
     data(){
