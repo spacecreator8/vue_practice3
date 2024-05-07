@@ -141,10 +141,14 @@ Vue.component('card', {
             <p><b>Сделать до:</b> {{exampleCard.deadline}}</p>
 
             <button class="btn_style" v-show="column_id=='first' && !cardRedactionFlag" @click.prevent="deleteCard(indexInList)">Удалить</button>
-            <button class="btn_style" v-show="column_id=='first' && !cardRedactionFlag" @click.prevent="cardRedactionFlag= true">Редактировать</button>
+            <button class="btn_style" v-show="(column_id=='first' || column_id=='second') && !cardRedactionFlag" @click.prevent="cardRedactionFlag= true">Редактировать</button>
             <button class="btn_style" v-show="cardRedactionFlag" @click.prevent="cancelRedaction">Отмена</button>
             <button  class="btn_style" v-show="cardRedactionFlag" @click.prevent="submitRedForm">Сохранить</button>
             <button class="move_btn btn_style" v-show="column_id=='first' && !cardRedactionFlag" @click.prevent="moveCardToSecond"> >> </button>
+            <button class="move_btn btn_style" v-show="column_id=='second' && !cardRedactionFlag" @click.prevent="moveCardToThird"> >> </button>
+
+            <button class="move_btn btn_style" v-show="column_id=='third' && !cardRedactionFlag" @click.prevent="moveCardToSecondFromThird"> << </button>
+            <button class="move_btn btn_style" v-show="column_id=='third' && !cardRedactionFlag" @click.prevent="moveCardToFourth"> >> </button>
         </div>
         `
     ,
@@ -182,6 +186,21 @@ Vue.component('card', {
             let copy = this.copyCard();
             eventBus.$emit('move-card-to-second', copy);
             eventBus.$emit('delete-from-first', this.indexInList);
+        },
+        moveCardToThird(){
+            let copy = this.copyCard();
+            eventBus.$emit('move-card-to-third', copy);
+            eventBus.$emit('delete-from-second', this.indexInList);
+        },
+        moveCardToSecondFromThird(){
+            let copy = this.copyCard();
+            eventBus.$emit('move-card-to-second', copy);
+            eventBus.$emit('delete-from-third', this.indexInList);
+        },
+        moveCardToFourth(){
+            let copy = this.copyCard();
+            eventBus.$emit('move-card-to-fourth', copy);
+            eventBus.$emit('delete-from-third', this.indexInList);
         },
         deleteCard(index){
             eventBus.$emit('delete-from-first',(index));
@@ -251,6 +270,28 @@ Vue.component('column', {
 
         eventBus.$on('move-card-to-second', (copy)=>{
             if(this.column_id=='second'){
+                this.list.push(copy);
+            }
+        }),
+
+        eventBus.$on('move-card-to-third', (copy)=>{
+            if(this.column_id=='third'){
+                this.list.push(copy);
+            }
+        }),
+
+        eventBus.$on('delete-from-second',(index)=>{
+            if(this.column_id=='second'){
+                this.list.splice(index, 1);
+            }
+        }),
+        eventBus.$on('delete-from-third',(index)=>{
+            if(this.column_id=='third'){
+                this.list.splice(index, 1);
+            }
+        }),
+        eventBus.$on('move-card-to-fourth', (copy)=>{
+            if(this.column_id=='fourth'){
                 this.list.push(copy);
             }
         })
