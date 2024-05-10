@@ -20,6 +20,7 @@ Vue.component('creator', {
             <p>Когда сделать</p>
             <input type="date" v-model="blank.deadline"><br>
             <button class="btn_style" @click.prevent="submitCreateForm">Добавить</button>
+            <button class="btn_style" @click.prevent="cancelCreateForm">Отмена</button>
         </div>
     `,
     data(){
@@ -34,6 +35,7 @@ Vue.component('creator', {
                     min: new Date().getMinutes(),
                 },
                 reasonRefund: null,
+                
                 title: null,
                 description: null,
                 deadline:null,
@@ -65,6 +67,9 @@ Vue.component('creator', {
                 eventBus.$emit('take-new-card', copy);
             }
 
+        },
+        cancelCreateForm(){
+            eventBus.$emit('cancel-create-card');
         },
         copyCard(){
             let copy= Object.assign({}, this.blank);
@@ -211,6 +216,7 @@ Vue.component('card', {
             if(!this.exampleCard.reasonRefund){
                 this.errorRefund = "Нужно указать причину возврата"
             }else{
+                
                 let copy = this.copyCard();
                 eventBus.$emit('move-card-to-second', copy);
                 eventBus.$emit('delete-from-third', this.indexInList);
@@ -224,7 +230,7 @@ Vue.component('card', {
         },
         cancelRemoving(){
             this.showReasonRefundFlag= false;
-            this.exampleCard.reasonRefund = null;
+            // this.exampleCard.reasonRefund = null;
         },
         deleteCard(index){
             eventBus.$emit('delete-from-first',(index));
@@ -341,6 +347,12 @@ Vue.component('column', {
         eventBus.$on('need-create-card', ()=>{
             if(this.column_id == 'first'){
                 this.showFormFlag= true;
+            }
+        }),
+
+        eventBus.$on('cancel-create-card',()=>{
+            if(this.column_id == 'first'){
+                this.showFormFlag= false;
             }
         }),
 

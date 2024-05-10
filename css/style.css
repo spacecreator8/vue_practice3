@@ -120,6 +120,7 @@ body{
     color:rgb(255, 51, 51);
     background-color: rgb(238, 253, 221);
     border-radius:7px;
+    border:2px solid red;
 }
 .blue_text{
     color:rgb(23, 187, 236);
